@@ -1,0 +1,17 @@
+{
+  "title": "部署",
+  "description": "将 Mix Space 部署到你的服务器",
+  "icon": "Server",
+  "root": true,
+  "pages": [
+    "index",
+    "docker",
+    "agent",
+    "one-script",
+    "source",
+    "reverse-proxy",
+    "ssl",
+    "external-services",
+    "community"
+  ]
+}

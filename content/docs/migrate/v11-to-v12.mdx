@@ -177,7 +177,7 @@ docker port postgres | grep 5432
 
 #### 方式 A（推荐）：宿主机直接 `npx`
 
-要求服务器装了 Node.js 22+。`npx` 会自动下载 CLI 并连接两边端口：
+要求服务器装了 Node.js 22+。`npx` 会自动下载 CLI，连接 mongo 与 pg 两个本地端口：
 
 ```bash
 MONGO_URI="mongodb://127.0.0.1:27017/mx-space" \
@@ -195,27 +195,19 @@ npx @mx-space/mongo-pg-cli@latest --mode apply
 
 如果你的 mongo 数据库名不是 `mx-space`、PG 凭证不是 `mx:mx`，对应替换。
 
-#### 方式 B：服务器没装 Node.js
+#### 方式 B：服务器没装 Node.js — 用临时 Node 容器跑
 
-让 mongo 容器接入 v12 的 docker 网络，再用 v12 镜像内置的 CLI bundle：
+跑一个一次性的 Node 容器代替 host node。容器需同时访问 mongo 和 postgres，最简单是 `--network host`（Linux 服务器适用；macOS/Windows 的 Docker Desktop 不支持，请改用方式 A）：
 
 ```bash
-# 查 v12 compose 创建的网络名
-docker network ls | grep mx-space
-# 类似输出： xxxxxxxxx   mx-space_mx-space   bridge   local
-
-# 接入旧 mongo 容器（容器名替换为你 docker ps 看到的实际名字）
-docker network connect mx-space_mx-space mongo
-
-# 跑镜像内置的 CLI bundle
-docker compose run --rm \
-  -e MONGO_URI=mongodb://mongo:27017/mx-space \
-  app \
-  node mongo-pg-cli.mjs --mode apply
-
-# 完事后断开网络（可选清理）
-docker network disconnect mx-space_mx-space mongo
+docker run --rm --network host \
+  -e MONGO_URI="mongodb://127.0.0.1:27017/mx-space" \
+  -e PG_URL="postgres://mx:mx@127.0.0.1:5432/mx_core" \
+  node:22-alpine \
+  npx -y @mx-space/mongo-pg-cli@latest --mode apply
 ```
+
+如果 `--network host` 不可用，可改为 `--network <v12 compose 网络名>` 并先把旧 mongo 容器接入该网络（`docker network connect mx-space_mx-space mongo`），再用容器名 `mongo:27017` 与 `postgres:5432` 连接。
 
 #### 预期输出
 
@@ -227,7 +219,7 @@ docker network disconnect mx-space_mx-space mongo
 
 | 错误提示 | 原因 | 解决 |
 |---------|------|------|
-| `MongoServerSelectionError` | mongo 端口未暴露 / 网络未联通 | 方式 A：检查 mongo 容器是否映射 27017；方式 B：重做 `docker network connect` |
+| `MongoServerSelectionError` | mongo 端口未暴露 / 网络未联通 | 检查 mongo 容器是否映射 27017，或确认 `--network` 设置正确 |
 | `Connection refused` (postgres) | PG 还没启动好 | 等 30 秒重试 |
 | `Missing refs > 0` | 有孤儿数据 | 通常可忽略，截图记录后继续 |
 | 其他错误 | 未知问题 | **不要继续**，保留日志，回滚到 v11（见下方回滚章节） |

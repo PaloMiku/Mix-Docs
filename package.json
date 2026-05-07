@@ -2,6 +2,7 @@
   "name": "mx-doc",
   "version": "0.0.0",
   "private": true,
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
     "build": "next build && node scripts/generate-redirects.mjs && next-sitemap",
     "dev": "next dev",

@@ -52,10 +52,6 @@ jobs:
 
       - name: Build project
         run: pnpm build
-            
-      - name: Generate sitemap
-        run: |
-          pnpm run generate-sitemap  
 
       - name: Add CNAME
         run: |

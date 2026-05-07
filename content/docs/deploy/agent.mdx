@@ -1,11 +1,9 @@
 ---
 title: 使用 AI Agent 部署
 description: 用 AI 编程助手（如 Claude Code、Codex、Cursor 等）自动化部署 Mix Space
-icon: Bot
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout'
-import { Step, Steps } from 'fumadocs-ui/components/steps'
 
 如果你不熟悉 Linux 运维，或者不想手动执行命令，可以使用 AI 编程助手来帮你完成整个部署过程。你只需要用自然语言描述需求，Agent 会自动在服务器上执行操作。
 
@@ -24,9 +22,7 @@ import { Step, Steps } from 'fumadocs-ui/components/steps'
 
 ## 准备工作
 
-<Steps>
-<Step>
-### 准备一台服务器
+### 准备一台服务器 [step]
 
 你需要一台已安装 Linux 的服务器（推荐 Ubuntu 22.04+），并确保：
 
@@ -38,10 +34,8 @@ import { Step, Steps } from 'fumadocs-ui/components/steps'
 - 服务器 IP 地址
 - SSH 端口（默认 22）
 - 登录用户名和密码（或 SSH 密钥）
-</Step>
 
-<Step>
-### 准备域名
+### 准备域名 [step]
 
 将你的域名 A 记录指向服务器 IP：
 
@@ -49,10 +43,8 @@ import { Step, Steps } from 'fumadocs-ui/components/steps'
 |----------|------|-----|
 | A | `@` | 你的服务器 IP |
 | A | `www` | 你的服务器 IP（可选） |
-</Step>
 
-<Step>
-### 安装 Agent 工具
+### 安装 Agent 工具 [step]
 
 以 Claude Code 为例，在本地电脑上安装：
 
@@ -61,14 +53,17 @@ npm install -g @anthropic-ai/claude-code
 ```
 
 其他工具请参考各自的安装文档。
-</Step>
-</Steps>
 
-## 开始部署
 
-<Steps>
-<Step>
-### 将 Mix Space 文档交给 Agent
+## 开始部署 
+
+
+### 将 Mix Space 文档交给 Agent [step]
+
+| 地址 | 功能 |
+| :--- | :--- |
+| https://mx-space.js.org/llms.txt | 可被 LLMs 采集使用的文档目录索引 TXT |
+| https://mx-space.js.org/llms-full.txt | 可被 LLMs 完整采集使用的文档 TXT |
 
 为了让 Agent 了解 Mix Space 的部署方式，先让它读取文档。在 Agent 对话中发送：
 
@@ -86,10 +81,8 @@ npm install -g @anthropic-ai/claude-code
 请读取 https://mx-space.js.org/agent-skills/mix-space-expert.md，
 然后帮我完成 Mix Space 的完整部署。
 ```
-</Step>
 
-<Step>
-### 告诉 Agent 你的信息
+### 告诉 Agent 你的信息 [step]
 
 将以下信息提供给 Agent（请替换为你的实际值）：
 
@@ -112,10 +105,8 @@ npm install -g @anthropic-ai/claude-code
 <Callout type="warn">
 不要将服务器密码直接发送给云端的 AI 服务。建议使用 SSH 密钥认证，或使用 Agent 的本地模式（如 Claude Code 的 `--dangerously-skip-permissions` 模式）。
 </Callout>
-</Step>
 
-<Step>
-### Agent 自动执行
+### Agent 自动执行 [step]
 
 Agent 会依次执行以下操作：
 
@@ -128,10 +119,8 @@ Agent 会依次执行以下操作：
 7. **验证**服务可以通过 HTTPS 访问
 
 你只需要在 Agent 询问时确认操作即可。
-</Step>
 
-<Step>
-### 验证部署
+### 验证部署 [step]
 
 让 Agent 帮你确认：
 
@@ -141,8 +130,7 @@ Agent 会依次执行以下操作：
 2. 访问 https://example.com/proxy/qaqdmin 是否能打开后台
 3. 检查 Docker 容器状态是否全部 healthy
 ```
-</Step>
-</Steps>
+
 
 ## 部署后配置
 

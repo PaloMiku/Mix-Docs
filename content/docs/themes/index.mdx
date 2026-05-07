@@ -1,10 +1,65 @@
 ---
-title: 前端主题列表
-description: 基于 Mix Space 后端 API 开发的前端主题列表
-icon: PaintRoller
+title: 主题总览
+description: Mix Space 前端主题介绍与选择
 ---
 
-import ThemeShowcase from 'app/components/ThemeShowcase'
+import { ShieldCheck,GitPullRequestClosed, Rocket, GitBranch, Smile, Annoyed, Frown} from 'lucide-react'
+import { ThemeCard } from '@/components/theme-card';
 
-<ThemeShowcase />
+<div className="flex flex-col gap-4 not-prose">
+<ThemeCard
+  name="Yohaku / 余白"
+  description="Yohaku（余白）取自日文，意为留白。它是 Shiro 的设计继承者，基于 Shiro 深度重构而来，延续了「纸的纯净与雪的清新」的设计语言，并在此基础上进一步打磨视觉体验与交互细节。"
+  author="Innei"
+  image="/screenshot/Yohaku.png"
+  href="/docs/themes/yohaku"
+  badges={[
+    { label: '官方', icon: ShieldCheck },
+    { label: '闭源', icon: GitPullRequestClosed },
+    { label: 'Next.js', icon: Rocket },
+    { label: '积极更新', icon: Smile },
+  ]}
+/>
+
+<ThemeCard
+  name="Shiro / 白"
+  description="一个极简主义的个人网站主题，如纸的纯净，似雪的清新。"
+  author="Innei"
+  image="/screenshot/Shiro.png"
+  href="/docs/themes/shiro"
+  badges={[
+    { label: '官方', icon: ShieldCheck },
+    { label: '开源', icon: GitBranch },
+    { label: 'Next.js', icon: Rocket },
+    { label: '维护模式', icon: Annoyed },
+  ]}
+/>
+<ThemeCard
+  name="Kami"
+  description="小小空间，大大梦想。日记风格的可爱主题，记录生活点滴，分享心情故事。"
+  author="Innei"
+  image="/screenshot/Kami.png"
+  href="/docs/themes/kami"
+  badges={[
+    { label: '官方', icon: ShieldCheck },
+    { label: '开源', icon: GitBranch },
+    { label: 'Next.js', icon: Rocket },
+    { label: '维护模式', icon: Annoyed },
+  ]}
+/>
+<ThemeCard  
+  name="Yun"
+  description="A light & fast & lovely mx web style.。"
+  author="Innei"
+  image="/screenshot/Yun.png"
+  href="/docs/themes/yun"
+  badges={[
+    { label: '官方', icon: ShieldCheck },
+    { label: '开源', icon: GitBranch },
+    { label: 'Next.js', icon: Rocket },
+    { label: '不再维护', icon: Frown },
+  ]}
+/>
+</div>
+
 

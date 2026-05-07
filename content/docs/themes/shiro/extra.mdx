@@ -1,7 +1,6 @@
 ---
 title: 额外功能
 description: Shiro 主题的额外功能配置
-icon: SquarePlus
 ---
 
 # 额外功能
@@ -18,12 +17,11 @@ icon: SquarePlus
 ## 我的动态
 
 Shiro 主题中，有一个可以在顶部显示博主当前正在做的事情的功能，这个功能是通过云函数和 ProcessReporter 软件实现的。
-
-import { ToGithub } from '@/app/components/ToGithub'
-
+<ToGithubGroup>
 <ToGithub repo="mx-space/ProcessReporterMac" />
 <ToGithub repo="TNXG/ProcessReporterWinpy" />
 <ToGithub repo="ttimochan/processforlinux" />
+</ToGithubGroup>
 
 <Callout type="info">
   非常感谢 Innei, timochan, TNXG 的贡献，目前 ProcessReporter 已支持全平台！
@@ -89,11 +87,11 @@ import { Step, Steps } from 'fumadocs-ui/components/steps'
 ### 配置软件
 
 前往对应着你的电脑系统的软件的 GitHub 仓库，下载并打开 ProcessReporter。
-
+<ToGithubGroup>
 <ToGithub repo="mx-space/ProcessReporterMac" />
 <ToGithub repo="TNXG/ProcessReporterWinpy" />
 <ToGithub repo="ttimochan/processforlinux" />
-
+</ToGithubGroup>
 由于不同平台有不同的使用方法，不同的软件我们会在下方具体讲述。
 
 </Steps>
@@ -148,7 +146,7 @@ processforwinpy.exe --path "运行目录的路径"
 
 安装完成后，新建 `.env.process` 文件，填入你的信息：
 
-```env
+```yaml
 # 你的 key
 API_KEY=your_key
 # 你的云函数地址
@@ -165,22 +163,6 @@ LOG_ENABLE=true
 
 如果有什么疑问，可以去阅读该项目的 [README](https://github.com/ttimochan/processforlinux#readme)
 
-<script>
-  {`
-  document.addEventListener('DOMContentLoaded', () => {
-    const style = document.createElement('style');
-    style.textContent = \`
-      .nextra-cards img {
-        border-radius: 50%;
-      }
-      .nextra-content pre {
-        max-height: 50vh;
-      }
-    \`;
-    document.head.appendChild(style);
-  });
-`}
-</script>
 
 ## 个人状态展示
 

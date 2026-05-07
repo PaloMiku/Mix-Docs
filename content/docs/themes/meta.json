@@ -2,8 +2,9 @@
     "root": true,
     "title": "前端主题",
     "description": "部署 Mix Space 的前端主题",
-    "icon": "PaintRoller",
+    "icons": "Paintbrush",
     "pages": [
+        "index",
         "yohaku",
         "shiro",
         "kami",

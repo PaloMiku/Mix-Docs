@@ -1,57 +1,71 @@
 ---
 title: Docker 部署
-description: 通过 Docker 部署 Mix Space 后端
-icon: Container
+description: 通过 Docker 部署 Mix-Space 的后端
 ---
 
-import { Step, Steps } from 'fumadocs-ui/components/steps';
-import { Callout } from 'fumadocs-ui/components/callout';
-import { Card, Cards } from 'fumadocs-ui/components/card';
-import { ExternalLink } from 'lucide-react';
-import { EnvVariableConfig } from 'app/components/EnvVariableConfig'
+## 安装 Docker [step]
 
-<Steps>
-
-<Step>
-### 安装 Docker
-
-如果你的服务器在国内，建议使用阿里云的安装脚本：
+不论在海外还是中国大陆境内我们都可以使用 Linuxmirrors 提供的 Docker 安装脚本来安装 Docker 和 Docker Compose，它具备可在多种系统上安装 Docker 的能力：
 
 ```bash
-curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
+bash <(curl -sSL https://linuxmirrors.cn/docker.sh)
 ```
 
-在国外，可以直接使用官方脚本：
+也可使用 Docker 官方提供的安装脚本（海外）：
 
 ```bash
 curl -fsSL https://get.docker.com | bash -s docker
 ```
 
-验证安装：
+对于 Docker 镜像加速，请在网络上自行搜索或自行搭建，也可使用 1Panel 安装服务器管理的同时安装 Docker 和镜像加速。
+
+例如 1Panel 提供了 `docker.1panel.top` 镜像加速源，使用方法是在 Docker 全局设置或在 `docker-compose.yml` 的 image 前添加镜像域名，例如 `docker.1panel.top/innei/mx-server:latest`
+如果您成功安装了 Docker 和 Docker-Compose，可以通过以下命令查看版本：
 
 ```bash
 docker -v
-docker compose version
+docker-compose -v
 ```
 
-</Step>
+## 拉取编排文件 [step]
 
-<Step>
-### 拉取配置文件
+<Callout title="对于旧版本升级请注意！" type="warn">
+自 Core v5.7.5 版本开始，Docker 相关配置发生重大变化，请重新阅读本文档（尤其是填入配置文件环节，配置有所变化）
+</Callout>
 
 ```bash
 cd && mkdir -p mx-space/core && cd $_
-
-# 拉取 docker-compose.yml 文件
+ 
+# 拉取 docker-compose.yml 文件（全球）
 wget https://fastly.jsdelivr.net/gh/mx-space/core@master/docker-compose.yml
+# 拉取 docker-compose.yml 文件（Gh-Proxy 全球）
+wget "https://gh-proxy.org/https://github.com/mx-space/core/blob/master/docker-compose.yml"
+```
+## 配置环境变量 [step]
+
+我们需要正确配置环境变量，打开获取到的`docker-compose.yml`文件，找到 Core 的配置。
+
+可以看到`environment`字段（下方示例代码高亮部分）
+
+```yaml
+  app:
+    container_name: mx-server
+    image: innei/mx-server:latest
+    // [!code word:environment]
+    environment:
+      - TZ=Asia/Shanghai
+      - NODE_ENV=production
+      - DB_HOST=mongo
+      - REDIS_HOST=redis
+      - ALLOWED_ORIGINS=localhost
+      - JWT_SECRET=YOUR_SUPER_SECURED_JWT_SECRET_STRING
+    volumes:
+      - ./data/mx-space:/root/.mx-space
 ```
 
-</Step>
+### 配置生成
 
-<Step>
-### 配置环境变量
-
-在下方的表格中填入配置，点击复制后粘贴到 `docker-compose.yml` 的 `environment` 字段中。
+在下方的组件中填入配置，点击复制后粘贴到 `docker-compose.yml` 的 `environment` 字段中，覆盖`JWT_SECRET` 和 `ALLOWED_ORIGINS` 的值，如果需要开启加密功能，请添加并将 `ENCRYPT_ENABLE` 的值改为 `true`，并填入 `ENCRYPT_KEY`。
 
 <EnvVariableConfig
   format="yaml"
@@ -75,38 +89,43 @@ wget https://fastly.jsdelivr.net/gh/mx-space/core@master/docker-compose.yml
   ]}
 />
 
-- **`JWT 密钥`**：长度 16-32 个字符，用于加密用户 JWT，务必保存好不要泄露。
-- **`被允许的域名`**：通常是前端的域名，多个用英文逗号分隔。
-- **`是否开启加密`**：如需开启，将 `false` 改为 `true`。
-- **`加密密钥`**：开启加密后必填，长度必须为 64 位且只有小写字母和数字。可用 `openssl rand -hex 32` 生成。**此操作不可逆，请谨慎。**
+import { TypeTable } from 'fumadocs-ui/components/type-table';
 
-</Step>
+### 变量介绍
 
-<Step>
+<TypeTable
+  type={{
+    'JWT 密钥': {
+      description: '长度 16-32 个字符，用于加密用户 JWT，务必保存好不要泄露。',
+      type: 'string',
+    },
+    '被允许的域名': {
+      description: '通常是前端的域名，多个用英文逗号分隔。',
+      type: 'string',
+    },
+    '是否开启加密': {
+      description: '如需开启，将 false 改为 true。',
+      type: 'boolean',
+      default: 'false',
+    },
+    '加密密钥': {
+      description: '开启加密后必填，长度必须为 64 位且只有小写字母和数字。可用 openssl rand -hex 32 生成。此操作不可逆，请谨慎。',
+      type: 'string',
+    },
+  }}
+/>
+
 ### 启动服务
-
-<Callout type="warn">
-如果服务器在国内，拉取镜像速度过慢，可在 `docker-compose.yml` 的 image 前添加镜像域名，例如 `docker.1panel.top/innei/mx-server:latest`。
-</Callout>
 
 ```bash
 docker compose up -d
 ```
-
-</Step>
-
-<Step>
-### 验证
 
 启动后，请按以下清单确认服务正常：
 
 - [ ] `docker compose ps` 显示所有服务状态为 healthy
 - [ ] `curl http://localhost:2333/api/v2/ping` 返回 `pong`
 - [ ] 浏览器能打开后台初始化页面 `http://你的域名/proxy/qaqdmin`
-
-</Step>
-
-</Steps>
 
 ## 下一步
 
